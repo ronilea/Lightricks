@@ -2,6 +2,8 @@ package imageProcessing;
 
 import CMDUtility.InvalidArgException;
 
+import java.util.ArrayList;
+
 /**
  * Defines types of connectivity.
  */

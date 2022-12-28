@@ -52,7 +52,6 @@ public class ImageProcess {
         }
         return mergedImage;
     }
-
     private static void validateImages(Image originalImage, Image mask) throws InvalidArgException {
         if (originalImage.getWidth() != mask.getWidth() || originalImage.getHeight() != mask.getHeight()) {
             throw new InvalidArgException("Mask and Image must be the same size.");

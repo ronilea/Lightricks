@@ -25,7 +25,7 @@ I suggest a solution where instead of calculating the weight and distance for ea
 pixels, we will find the first row where the hole starts and the last row where it ends and iterate (once going down
 from the first row and then going up from the last row) and start to fill the pixels by this order, according to their
 neighbors. In that case, for each hole we will only check its neighbors (a constant k, in our case 4/8)
-so the time complexity will be O(n)* O(1) = O(n). The implementation is in Hole Filler.
+so the time complexity will be O(n)* O(1) = O(n). The implementation is in imageProcessing, LinearHoleFiller.
 
 
 

@@ -1,6 +1,7 @@
 package imageProcessing;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,19 +44,19 @@ public class HoleFiller extends GeneralFiller {
         initBorderAndHole();
     }
 
-    private void defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr) {
-        currNeighborsArr.clear();
-        currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY()));
-        currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY()));
-        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() - 1));
-        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() + 1));
-        if (connectivity == Connectivity.Eight) {
-            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() - 1));
-            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() + 1));
-            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() - 1));
-            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() + 1));
-        }
-    }
+//    private void defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr) {
+//        currNeighborsArr.clear();
+//        currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY()));
+//        currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY()));
+//        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() - 1));
+//        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() + 1));
+//        if (connectivity == Connectivity.Eight) {
+//            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() - 1));
+//            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() + 1));
+//            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() - 1));
+//            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() + 1));
+//        }
+//    }
 
     private void initBorderAndHole() {
         ArrayList<Pixel> currNeighboursArr = new ArrayList<>();
@@ -63,7 +64,7 @@ public class HoleFiller extends GeneralFiller {
             for (Pixel pixel : row) {
                 if (pixel.color == EMPTY) {
                     holePixels.add(pixel);
-                    defineNeighborsForPixel(pixel, currNeighboursArr);
+                    currNeighboursArr = image.defineNeighborsForPixel(pixel, currNeighboursArr, connectivity);
                     for (Pixel neighbor : currNeighboursArr) {
                         if (image.getPixelColor(neighbor) != EMPTY) {
                             borderPixels.add(neighbor);
@@ -78,17 +79,22 @@ public class HoleFiller extends GeneralFiller {
     @Override
     public void fillPixelsInHole(Image image) {
         for (Pixel hole : holePixels ){
-            double WeightColorSum = 0;
-            double WeightSum = 0;
-
-            for (Pixel neighbor: borderPixels){
-                double weight = weightFunc.getWeight(hole,neighbor);
-                WeightColorSum += weight * image.getPixelColor(neighbor);
-                WeightSum += weight;
-
-            }
-            image.setPixelColor(hole, WeightColorSum / WeightSum);
+            double newColor = getColorByNeighbors(borderPixels, hole, weightFunc, image);
+            System.out.println("NEW COLOR" + newColor);
+            image.setPixelColor(hole, newColor);
         }
+    }
+
+    static public double getColorByNeighbors(Collection<Pixel> borderPixels, Pixel hole, WeightFunc weightFunc, Image image){
+        double weightColorSum = 0;
+        double weightSum = 0;
+
+        for (Pixel neighbor: borderPixels){
+            double weight = weightFunc.getWeight(hole,neighbor);
+            weightColorSum += weight * image.getPixelColor(neighbor);
+            weightSum += weight;
+        }
+        return weightColorSum/weightSum;
     }
 
 }
