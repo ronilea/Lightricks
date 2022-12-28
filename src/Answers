@@ -1,0 +1,31 @@
+Question 1.
+
+As described in the question, m represents the amount of boundary pixels and n represents the number of hole pixels.
+In the fillingHole algorithm, there are two loops where the first one iterates over the hole's Pixels and the
+inner loop iterates over the border pixels. In the outside loop, we only initialize two double variables in O(1),
+the inner one calculates the weight between the hole and the neighbor in O(1) as well - the calculation requires
+some math operations on known values or values we get in O(1) (Pixels from array).
+After that, we add the calculated value to the two variables and when we enter the outer loop again we
+set the pixel color to the calculated double - so these calculations just require access to the data to look for the
+pixel by index (O(1)) and adding and multiplying operations which are as well in O(1).
+So, we can say that the time complexity of the algorithm is O(n * m).
+
+Each hole has a constant number of neighbors - in our case it's 4 or 8 but in general it will be some positive k.
+In the worst case, each hole pixel has different none hole pixels so it has k neighbors which means
+the border holes will contain k*n pixels. According the described algorithm above, the time complexity of the algorithm
+will be n*n*k, O(n^2), as an upper bound.
+
+However, I will suggest a more tight bound. Usually holes are in a same that is similar to a circle, triangle, square
+and so on - where the border size is smaller than the root of n (sqrt(n)).
+So the time complexity will be O(n * square(n)).
+
+Question 2.
+
+I suggest a solution where instead of calculating the weight and distance for each hole pixel to the whole border
+pixels, we will find the first row where the hole starts and the last row where it ends and iterate (once going down
+from the first row and then going up from the last row) and start to fill the pixels by this order, according to their
+neighbors. In that case, for each hole we will only check its neighbors (a constant k, in our case 4/8)
+so the time complexity will be O(n)* O(1) = O(n). The implementation is in Hole Filler.
+
+
+
