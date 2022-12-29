@@ -1,4 +1,4 @@
-package imageProcessing;
+package ImageProcessing;
 
 public class DefaultWeightFunc extends WeightFunc {
     static final double Z = 1.0;

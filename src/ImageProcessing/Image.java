@@ -1,7 +1,6 @@
-package imageProcessing;
+package ImageProcessing;
 
 import CMDUtility.InvalidArgException;
-import org.opencv.ml.EM;
 
 import java.util.ArrayList;
 
@@ -81,41 +80,5 @@ public class Image {
         return width;
     }
 
-    public ArrayList<Pixel> getNoneEmptyNeighbors(Pixel pixel, Connectivity connectivity) throws InvalidArgException{
-        ArrayList<Pixel> neighbors = new ArrayList<>();
-        Pixel curr_neighbor;
-        int[][] directions = getDirections(connectivity);
-
-        for (var direction : directions) {
-            curr_neighbor = getPixel(pixel.x + direction[0], pixel.y + direction[1]);
-            if (curr_neighbor.color != EMPTY) {
-                neighbors.add(curr_neighbor);
-            }
-        }
-        return neighbors;
-
-
-    }
-
-    private static int[][] getDirections(Connectivity connectivity) {
-        int[][] directions;
-        if (connectivity == Connectivity.Four) {
-            directions = GeneralFiller.directions_four;
-        } else {
-            directions = GeneralFiller.directions_eight;
-        }
-        return directions;
-    }
-
-
-    public ArrayList<Pixel> defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr,
-                                                    Connectivity connectivity) throws InvalidArgException {
-        currNeighborsArr.clear();
-        int[][] directions = getDirections(connectivity);
-        for (int[] direction : directions) {
-            currNeighborsArr.add(getPixel(pixel.x + direction[0], pixel.y + direction[1]));
-        }
-        return currNeighborsArr;
-    }
 
 }

@@ -1,4 +1,4 @@
-package imageProcessing;
+package ImageProcessing;
 
 import CMDUtility.InvalidArgException;
 
@@ -7,19 +7,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HoleFiller extends GeneralFiller {
+public class HoleFillerByBorder extends HoleFiller {
     public static final int EMPTY = -1;
     public final WeightFunc weightFunc;
     public final Connectivity connectivity;
     private final Set<Pixel> borderPixels;
     private final ArrayList<Pixel> holePixels;
     private Image image;
+    private ImageNavigator imageNavigator;
 
     /**
      * in order to allow use the default weight func with its default parameters.
      * @param connectivity connectivity type
      */
-    public HoleFiller(Connectivity connectivity) {
+    public HoleFillerByBorder(Connectivity connectivity) {
 
         this.weightFunc = new DefaultWeightFunc();
         this.borderPixels = new HashSet<>();
@@ -34,7 +35,7 @@ public class HoleFiller extends GeneralFiller {
      * @param connectivity connectivity type
      * @param weightFunc weight function (that used to fill the holes)
      */
-    public HoleFiller(Connectivity connectivity, WeightFunc weightFunc) {
+    public HoleFillerByBorder(Connectivity connectivity, WeightFunc weightFunc) {
         this.connectivity = connectivity;
         this.weightFunc = weightFunc;
         this.borderPixels = new HashSet<>();
@@ -49,7 +50,7 @@ public class HoleFiller extends GeneralFiller {
             for (Pixel pixel : row) {
                 if (pixel.color == EMPTY) {
                     holePixels.add(pixel);
-                    currNeighboursArr = image.defineNeighborsForPixel(pixel, currNeighboursArr, connectivity);
+                    currNeighboursArr = imageNavigator.defineNeighborsForPixel(pixel, currNeighboursArr);
                     for (Pixel neighbor : currNeighboursArr) {
                         if (image.getPixelColor(neighbor) != EMPTY) {
                             borderPixels.add(neighbor);
@@ -63,6 +64,7 @@ public class HoleFiller extends GeneralFiller {
     @Override
     public void fillPixelsInHole(Image image) throws InvalidArgException {
         this.image = image;
+        this.imageNavigator = new ImageNavigator(image, connectivity);
         initBorderAndHole();
         setColorToHolePixels();
     }
