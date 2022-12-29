@@ -1,4 +1,4 @@
-package imageProcessing;
+package ImageProcessing;
 
 import CMDUtility.InvalidArgException;
 
@@ -12,20 +12,24 @@ public class Image {
 
     /**
      * in case we want to create an image with an already initialized data
+     *
      * @param imageMat image matrix (double array of pixels)
      */
-    public Image(ArrayList<ArrayList<Pixel>> imageMat){
+    public Image(ArrayList<ArrayList<Pixel>> imageMat) {
         data = imageMat;
         this.width = data.get(0).size();
         this.height = data.size();
     }
-    public Image(int width, int height){
+
+    /**
+     * Created new empty Image sized width * height
+     */
+    public Image(int width, int height) {
         this.width = width;
         this.height = height;
         try {
             initialize_data();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             data = new ArrayList<>();
         }
 
@@ -36,9 +40,9 @@ public class Image {
      */
     private void initialize_data() throws InvalidArgException {
         data = new ArrayList<>();
-        for (int row = 0; row < height; row++){
+        for (int row = 0; row < height; row++) {
             data.add(new ArrayList<>(width));
-            for(int col=0; col < width; col++){
+            for (int col = 0; col < width; col++) {
                 Pixel newP = new Pixel(col, row, EMPTY); // set all as empty
                 data.get(row).add(newP);
             }
@@ -46,19 +50,24 @@ public class Image {
     }
 
 
-    public Pixel getPixel(int x, int y){
-        if (0 <= x && x < width && 0<=y && y < height ) return data.get(y).get(x);
-        return null;
+    public Pixel getPixel(int x, int y) throws InvalidArgException {
+        if (0 <= x && x < width && 0 <= y && y < height) return data.get(y).get(x);
+        else{
+            throw new InvalidArgException("x or y aren't valid.");
+        }
     }
-    public double getPixelColor(Pixel pixel){
-        int x = pixel.getX();
-        int y = pixel.getY();
+
+    public double getPixelColor(Pixel pixel) {
+        int x = pixel.x;
+        int y = pixel.y;
         return data.get(y).get(x).color;
     }
-    public void setPixelColor(Pixel pixel, double color){
-        setPixelColor(pixel.getX(), pixel.getY(),color);
+
+    public void setPixelColor(Pixel pixel, double color) {
+        setPixelColor(pixel.x, pixel.y, color);
     }
-    public void setPixelColor(int x, int y, double color){
+
+    public void setPixelColor(int x, int y, double color) {
         Pixel pixel = data.get(y).get(x);
         pixel.color = color;
     }
@@ -70,4 +79,6 @@ public class Image {
     public int getWidth() {
         return width;
     }
+
+
 }

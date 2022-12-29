@@ -1,4 +1,4 @@
-package imageProcessing;
+package ImageProcessing;
 
 import CMDUtility.InvalidArgException;
 

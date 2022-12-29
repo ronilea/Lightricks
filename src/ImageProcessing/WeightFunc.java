@@ -1,4 +1,4 @@
-package imageProcessing;
+package ImageProcessing;
 
 public abstract class WeightFunc {
 
