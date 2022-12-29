@@ -51,9 +51,11 @@ public class Image {
     }
 
 
-    public Pixel getPixel(int x, int y) {
+    public Pixel getPixel(int x, int y) throws InvalidArgException {
         if (0 <= x && x < width && 0 <= y && y < height) return data.get(y).get(x);
-        return null;
+        else{
+            throw new InvalidArgException("x or y aren't valid.");
+        }
     }
 
     public double getPixelColor(Pixel pixel) {
@@ -79,7 +81,7 @@ public class Image {
         return width;
     }
 
-    public ArrayList<Pixel> getNoneEmptyNeighbors(Pixel pixel, Connectivity connectivity) {
+    public ArrayList<Pixel> getNoneEmptyNeighbors(Pixel pixel, Connectivity connectivity) throws InvalidArgException{
         ArrayList<Pixel> neighbors = new ArrayList<>();
         Pixel curr_neighbor;
         int[][] directions = getDirections(connectivity);
@@ -106,7 +108,8 @@ public class Image {
     }
 
 
-    public ArrayList<Pixel> defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr, Connectivity connectivity) {
+    public ArrayList<Pixel> defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr,
+                                                    Connectivity connectivity) throws InvalidArgException {
         currNeighborsArr.clear();
         int[][] directions = getDirections(connectivity);
         for (int[] direction : directions) {

@@ -58,7 +58,7 @@ public class ImageProcess {
         }
     }
 
-    public static void writeImageToFile(Image outputImage, String outputPath) {
+    public static void writeImageToFile(Image outputImage, String outputPath) throws InvalidArgException{
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         Mat matOutput = new Mat(outputImage.getHeight(), outputImage.getWidth(), CvType.CV_8UC1);
 

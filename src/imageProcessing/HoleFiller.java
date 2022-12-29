@@ -1,5 +1,7 @@
 package imageProcessing;
 
+import CMDUtility.InvalidArgException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,21 +13,18 @@ public class HoleFiller extends GeneralFiller {
     public final Connectivity connectivity;
     private final Set<Pixel> borderPixels;
     private final ArrayList<Pixel> holePixels;
-    private final Image image;
+    private Image image;
 
     /**
      * in order to allow use the default weight func with its default parameters.
      * @param connectivity connectivity type
-     * @param image image object to fill
      */
-    public HoleFiller(Connectivity connectivity, Image image) {
+    public HoleFiller(Connectivity connectivity) {
 
         this.weightFunc = new DefaultWeightFunc();
         this.borderPixels = new HashSet<>();
         this.holePixels = new ArrayList<>();
         this.connectivity = connectivity;
-        this.image = image;
-        initBorderAndHole();
 
 
     }
@@ -33,39 +32,23 @@ public class HoleFiller extends GeneralFiller {
     /**
      * constructor when we receive a different weight function( not the default one) from the user
      * @param connectivity connectivity type
-     * @param image image object to fill
      * @param weightFunc weight function (that used to fill the holes)
      */
-    public HoleFiller(Connectivity connectivity, Image image, WeightFunc weightFunc) {
+    public HoleFiller(Connectivity connectivity, WeightFunc weightFunc) {
         this.connectivity = connectivity;
         this.weightFunc = weightFunc;
         this.borderPixels = new HashSet<>();
         this.holePixels = new ArrayList<>();
-        this.image = image;
-        initBorderAndHole();
     }
 
-//    private void defineNeighborsForPixel2(Pixel pixel, ArrayList<Pixel> currNeighborsArr) {
-//        currNeighborsArr.clear();
-//        currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY()));
-//        currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY()));
-//        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() - 1));
-//        currNeighborsArr.add(image.getPixel(pixel.getX(), pixel.getY() + 1));
-//        if (connectivity == Connectivity.Eight) {
-//            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() - 1));
-//            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() + 1));
-//            currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY() - 1));
-//            currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY() + 1));
-//        }
-//    }
 
-    private void initBorderAndHole() {
+    private void initBorderAndHole() throws InvalidArgException {
+
         ArrayList<Pixel> currNeighboursArr = new ArrayList<>();
         for (var row : image.data) {
             for (Pixel pixel : row) {
                 if (pixel.color == EMPTY) {
                     holePixels.add(pixel);
-//                    defineNeighborsForPixel2(pixel, currNeighboursArr);
                     currNeighboursArr = image.defineNeighborsForPixel(pixel, currNeighboursArr, connectivity);
                     for (Pixel neighbor : currNeighboursArr) {
                         if (image.getPixelColor(neighbor) != EMPTY) {
@@ -75,21 +58,23 @@ public class HoleFiller extends GeneralFiller {
                 }
             }
         }
-        System.out.println("Border Size " + borderPixels.size());
-        System.out.println("HOle Size " + holePixels.size());
-
     }
 
     @Override
-    public void fillPixelsInHole(Image image) {
+    public void fillPixelsInHole(Image image) throws InvalidArgException {
+        this.image = image;
+        initBorderAndHole();
+        setColorToHolePixels();
+    }
+
+    private void setColorToHolePixels() {
         for (Pixel hole : holePixels ){
-            double newColor = getColorByNeighbors(borderPixels, hole, weightFunc, image);
-            System.out.println("NEW COLOR " + newColor);
+            double newColor = getColorByNeighbors(borderPixels, hole, weightFunc);
             image.setPixelColor(hole, newColor);
         }
     }
 
-    static public double getColorByNeighbors(Collection<Pixel> borderPixels, Pixel hole, WeightFunc weightFunc, Image image){
+    static public double getColorByNeighbors(Collection<Pixel> borderPixels, Pixel hole, WeightFunc weightFunc){
         double weightColorSum = 0;
         double weightSum = 0;
 
@@ -98,23 +83,6 @@ public class HoleFiller extends GeneralFiller {
             weightColorSum += (weight * neighbor.color);
             weightSum += weight;
         }
-        if (borderPixels.size()!= 158){
-            System.out.println("ERRORRR Calculated by: " + borderPixels.size());
-
-        }
-        return weightColorSum/weightSum;
+        return weightColorSum / weightSum;
     }
-
 }
-//todo: delete this
-//                FillHoleAlgorithm algo = FillHoleAlgorithm();
-//                algo.apply(image);
-//                System.out.println("neighbor");
-//                System.out.println("X: " +neighbor.getX());
-//                System.out.println("Y: "+neighbor.getY());
-//                System.out.println("WEIGHT: "+weight);
-//                System.out.println("COLOR: " +neighbor.getColor());
-
-//            System.out.println("COLOR final: "+ WeightColorSum/WeightSum);
-//            hole.setColor(0.3);
-//        System.out.println(borderPixels.size());

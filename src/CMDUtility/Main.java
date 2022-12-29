@@ -16,11 +16,13 @@ public class Main {
             if (args.length != VALID_NUM_ARGS) {
                 throw new InvalidArgException("Invalid number of arguments.");
             }
+
             var givenImagePath = args[IMAGE_ARG_INDEX];
             var maskImagePath = args[MASK_ARG_INDEX];
             if (givenImagePath == null || maskImagePath == null) {
                 throw new InvalidArgException("File name doesn't exist");
             }
+
             var connectivity_val = args[CONNECTIVITY_ARG_INDEX];
             Connectivity connectivity = Connectivity.getConnectivityType(connectivity_val);
             var epsilon = Float.parseFloat(args[EPS_ARG_INDEX]);
@@ -35,15 +37,15 @@ public class Main {
             WeightFunc weightFunc = new DefaultWeightFunc(epsilon, zed);
 
             // fill the holes in the image
-            GeneralFiller fillingAlgo = new HoleFiller(connectivity, image, weightFunc);
+            GeneralFiller fillingAlgo = new HoleFiller(connectivity, weightFunc);
             fillingAlgo.fillPixelsInHole(image);
 
             // Second Algorithm - Linear algorithm
-//            GeneralFiller LinearFillingAlgo = new LinearHoleFiller(weightFunc, connectivity);
+            GeneralFiller LinearFillingAlgo = new LinearHoleFiller(connectivity,weightFunc);
 //             LinearFillingAlgo.fillPixelsInHole(image);
 
             ImageProcess.writeImageToFile(image, givenImagePath + "_o_" + zed + "_" + epsilon + "_" +
-                    connectivity_val + "reg3"+  "_.png");
+                    connectivity_val + "reg6"+  "_.png");
             System.out.println("Done with Image hole filling.");
 
         } catch (Exception e) {
