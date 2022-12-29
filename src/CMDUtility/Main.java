@@ -36,14 +36,14 @@ public class Main {
 
             // fill the holes in the image
             GeneralFiller fillingAlgo = new HoleFiller(connectivity, image, weightFunc);
+            fillingAlgo.fillPixelsInHole(image);
 
             // Second Algorithm - Linear algorithm
 //            GeneralFiller LinearFillingAlgo = new LinearHoleFiller(weightFunc, connectivity);
-//            LinearFillingAlgo.fillPixelsInHole(image);
-            fillingAlgo.fillPixelsInHole(image);
+//             LinearFillingAlgo.fillPixelsInHole(image);
 
             ImageProcess.writeImageToFile(image, givenImagePath + "_o_" + zed + "_" + epsilon + "_" +
-                    connectivity_val + "regular"+  "_.png");
+                    connectivity_val + "reg3"+  "_.png");
             System.out.println("Done with Image hole filling.");
 
         } catch (Exception e) {

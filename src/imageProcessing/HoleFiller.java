@@ -25,6 +25,7 @@ public class HoleFiller extends GeneralFiller {
         this.holePixels = new ArrayList<>();
         this.connectivity = connectivity;
         this.image = image;
+        initBorderAndHole();
 
 
     }
@@ -44,7 +45,7 @@ public class HoleFiller extends GeneralFiller {
         initBorderAndHole();
     }
 
-//    private void defineNeighborsForPixel(Pixel pixel, ArrayList<Pixel> currNeighborsArr) {
+//    private void defineNeighborsForPixel2(Pixel pixel, ArrayList<Pixel> currNeighborsArr) {
 //        currNeighborsArr.clear();
 //        currNeighborsArr.add(image.getPixel(pixel.getX() - 1, pixel.getY()));
 //        currNeighborsArr.add(image.getPixel(pixel.getX() + 1, pixel.getY()));
@@ -64,6 +65,7 @@ public class HoleFiller extends GeneralFiller {
             for (Pixel pixel : row) {
                 if (pixel.color == EMPTY) {
                     holePixels.add(pixel);
+//                    defineNeighborsForPixel2(pixel, currNeighboursArr);
                     currNeighboursArr = image.defineNeighborsForPixel(pixel, currNeighboursArr, connectivity);
                     for (Pixel neighbor : currNeighboursArr) {
                         if (image.getPixelColor(neighbor) != EMPTY) {
@@ -73,6 +75,8 @@ public class HoleFiller extends GeneralFiller {
                 }
             }
         }
+        System.out.println("Border Size " + borderPixels.size());
+        System.out.println("HOle Size " + holePixels.size());
 
     }
 
@@ -80,7 +84,7 @@ public class HoleFiller extends GeneralFiller {
     public void fillPixelsInHole(Image image) {
         for (Pixel hole : holePixels ){
             double newColor = getColorByNeighbors(borderPixels, hole, weightFunc, image);
-            System.out.println("NEW COLOR" + newColor);
+            System.out.println("NEW COLOR " + newColor);
             image.setPixelColor(hole, newColor);
         }
     }
@@ -89,10 +93,14 @@ public class HoleFiller extends GeneralFiller {
         double weightColorSum = 0;
         double weightSum = 0;
 
-        for (Pixel neighbor: borderPixels){
+        for (Pixel neighbor: borderPixels) {
             double weight = weightFunc.getWeight(hole,neighbor);
-            weightColorSum += weight * image.getPixelColor(neighbor);
+            weightColorSum += (weight * neighbor.color);
             weightSum += weight;
+        }
+        if (borderPixels.size()!= 158){
+            System.out.println("ERRORRR Calculated by: " + borderPixels.size());
+
         }
         return weightColorSum/weightSum;
     }

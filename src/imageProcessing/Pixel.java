@@ -5,8 +5,8 @@ import CMDUtility.InvalidArgException;
 import java.util.ArrayList;
 
 public class Pixel {
-    private final int x;
-    private final int y;
+    public final int x;
+    public final int y;
     public double color;
     Pixel(int x, int y, double color) throws InvalidArgException {
         if (x >= 0 && y >= 0){

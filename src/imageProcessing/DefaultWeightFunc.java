@@ -18,8 +18,8 @@ public class DefaultWeightFunc extends WeightFunc {
     public double getWeight(Pixel u, Pixel v) {
 
             double retVal = 1;
-            var norm = Math.pow(Math.pow(Math.abs(u.getX()-v.getX()), this.z) +
-                    Math.pow(Math.abs(u.getY()-v.getY()), this.z), 1.0/ this.z);
+            var norm = Math.pow(Math.pow(Math.abs(u.x-v.x), this.z) +
+                    Math.pow(Math.abs(u.y-v.y), this.z), 1.0/ this.z);
             retVal /= (this.epsilon +norm);
             return retVal;
            }
